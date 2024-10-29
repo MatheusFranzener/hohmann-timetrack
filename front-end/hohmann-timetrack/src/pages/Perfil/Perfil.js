@@ -4,7 +4,9 @@ import Header from '../../components/Header/Header';
 function Perfil() {
     {/* Tela de Perfil */ }
     return (
-        <Header />
+        <div>
+            Perfil
+        </div>
     );
 }
 

@@ -4,7 +4,9 @@ import Header from '../../components/Header/Header';
 function Home() {
     {/* Tela de Home */ }
     return (
-        <Header />
+        <div>
+            Home
+        </div>
     );
 }
 

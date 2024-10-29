@@ -1,11 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
-import Home from './pages/Home/Home';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import Login from './pages/Login/Login.js';
+import Home from './pages/Home/Home.js';
+import Header from './components/Header/Header.js';
+import Perfil from './pages/Perfil/Perfil.js';
+import CadastroFuncionario from './pages/CadastroFuncionario/CadastroFuncionario.js'
+import DadosFinanceiros from './pages/DadosFinanceiros/DadosFinanceiros.js';
 
-function App() {
+const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+
   return (
-    <Home />
+    <Router>
+      <Header isAuthenticated={isAuthenticated} />
+      <Routes>
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route
+          path="/home"
+          element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/perfil"
+          element={isAuthenticated ? <Perfil /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/dados-financeiros"
+          element={isAuthenticated ? <DadosFinanceiros /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/cadastrar-funcionario" element={isAuthenticated ? <CadastroFuncionario /> : <Navigate to="/login" />}
+        />
+        <Route path="/" element={<Navigate to="/login" />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

@@ -4,7 +4,9 @@ import Header from '../../components/Header/Header';
 function CadastroFuncionario() {
     {/* Tela de Cadastro de Funcionário */ }
     return (
-        <Header />
+        <div>
+            Cadastro Funcionários
+        </div>
     );
 }
 

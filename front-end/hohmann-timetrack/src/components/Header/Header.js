@@ -8,9 +8,11 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { useNavigate } from 'react-router-dom'; // Importe o useNavigate para navegação
 
-function Header() {
+function Header({ isAuthenticated }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const navigate = useNavigate(); // Use navigate para redirecionar
 
   // Função para abrir o menu
   const handleMenuOpen = (event) => {
@@ -20,6 +22,12 @@ function Header() {
   // Função para fechar o menu
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  // Função para lidar com navegação
+  const handleNavigate = (path) => {
+    navigate(path);
+    handleMenuClose();
   };
 
   return (
@@ -36,20 +44,31 @@ function Header() {
             <MenuIcon />
           </IconButton>
           
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Dados Financeiros</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Cadastrar Funcionário</MenuItem>
-          </Menu>
-          
+          {isAuthenticated && (
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={() => handleNavigate('/perfil')}>Perfil</MenuItem>
+              <MenuItem onClick={() => handleNavigate('/dados-financeiros')}>Dados Financeiros</MenuItem>
+              <MenuItem onClick={() => handleNavigate('/cadastrar-funcionario')}>Cadastrar Funcionário</MenuItem>
+            </Menu>
+          )}
+
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: '#333' }}>
             Hohmann
           </Typography>
-          <Button sx={{ color: '#333' }}>Login</Button>
+
+          {isAuthenticated ? (
+            <Button sx={{ color: '#333' }} onClick={() => navigate('/login')}>
+              Logout
+            </Button>
+          ) : (
+            <Button sx={{ color: '#333' }} onClick={() => navigate('/login')}>
+              Login
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </Box>

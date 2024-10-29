@@ -4,7 +4,9 @@ import Header from '../../components/Header/Header';
 function RegistrarPonto() {
     {/* Tela de Cadastro de Funcionário */ }
     return (
-        <Header />
+        <div>
+            Registrar Ponto
+        </div>
     );
 }
 
