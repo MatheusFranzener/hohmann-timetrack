@@ -1,0 +1,14 @@
+.home-container {
+    padding: 20px;
+}
+
+.home-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.home-table-container {
+    margin-top: 20px;
+}

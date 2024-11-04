@@ -43,7 +43,7 @@ function Header({ isAuthenticated }) {
           >
             <MenuIcon />
           </IconButton>
-          
+
           {isAuthenticated && (
             <Menu
               anchorEl={anchorEl}
@@ -56,7 +56,11 @@ function Header({ isAuthenticated }) {
             </Menu>
           )}
 
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: '#333' }}>
+          <Typography variant="h6" component="div" sx={{ cursor: 'pointer', flexGrow: 1, color: '#333' }} onClick={() => {
+            if (isAuthenticated) {
+              navigate('/home');
+            }
+          }}>
             Hohmann
           </Typography>
 
@@ -71,7 +75,7 @@ function Header({ isAuthenticated }) {
           )}
         </Toolbar>
       </AppBar>
-    </Box>
+    </Box >
   );
 }
 

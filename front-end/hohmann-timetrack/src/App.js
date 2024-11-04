@@ -6,6 +6,8 @@ import Header from './components/Header/Header.js';
 import Perfil from './pages/Perfil/Perfil.js';
 import CadastroFuncionario from './pages/CadastroFuncionario/CadastroFuncionario.js'
 import DadosFinanceiros from './pages/DadosFinanceiros/DadosFinanceiros.js';
+import RegistrarPonto from './components/Ponto/RegistrarPonto/RegistrarPonto.js';
+import EditarPonto from './components/Ponto/EditarPonto/EditarPonto.js';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -34,6 +36,8 @@ const App = () => {
         <Route
           path="/cadastrar-funcionario" element={isAuthenticated ? <CadastroFuncionario /> : <Navigate to="/login" />}
         />
+        <Route path="/registrar-ponto" element={isAuthenticated ? <RegistrarPonto /> : <Navigate to="/login" />} />
+        <Route path="/editar-ponto/:id" element={isAuthenticated ? <EditarPonto /> : <Navigate to="/login" />} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
