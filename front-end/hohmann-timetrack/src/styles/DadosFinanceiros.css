@@ -1,0 +1,54 @@
+.root-financeiro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 93vh;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.paper-financeiro {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 90vw;
+    max-width: 1200px;
+    height: 70vh;
+    max-height: 800px;
+    padding: 32px;
+    margin: auto;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.btn-class {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+}
+
+.btn-cancel {
+    background-color: red !important;
+    color: white;
+    margin-right: 15px !important;
+}
+
+.div-info-salario {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 35px auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 600px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.div-info-salario .MuiTypography-root {
+    margin-bottom: 8px;
+}
+
