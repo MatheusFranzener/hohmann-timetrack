@@ -23,7 +23,7 @@ const PerfilEdit = ({ perfilData, onSave, onCancel }) => {
 
     return (
         <div className="root-perfil">
-            <Paper elevation={3} className='paper'>
+            <Paper elevation={3} className='paper-perfil'>
                 <Typography variant="h4" align="center" className="perfil-heading">
                     Editar Perfil
                 </Typography>
@@ -31,11 +31,11 @@ const PerfilEdit = ({ perfilData, onSave, onCancel }) => {
                 <Grid container spacing={3} className="perfil-details">
                     <Grid item xs={12} sm={6}>
                         <TextField
-                            label="Nome Completo"
-                            name="nomeCompleto"
+                            label="Nome"
+                            name="nome"
                             variant="outlined"
                             fullWidth
-                            value={formData.nomeCompleto}
+                            value={formData.nome}
                             onChange={handleChange}
                         />
                     </Grid>
@@ -125,6 +125,7 @@ const PerfilEdit = ({ perfilData, onSave, onCancel }) => {
                             name="salarioHora"
                             variant="outlined"
                             fullWidth
+                            disabled={!formData.isAdmin}
                             value={formData.salarioHora}
                             onChange={handleChange}
                         />
@@ -135,6 +136,7 @@ const PerfilEdit = ({ perfilData, onSave, onCancel }) => {
                             name="cargo"
                             variant="outlined"
                             fullWidth
+                            disabled={!formData.isAdmin}
                             value={formData.cargo}
                             onChange={handleChange}
                         />

@@ -8,7 +8,7 @@ const PerfilView = ({ perfilData, onEdit }) => {
 
     return (
         <div className='root-perfil'>
-            <Paper elevation={3} className='paper'>
+            <Paper elevation={3} className='paper-perfil'>
                 <Typography variant="h4" align="center" className="perfil-heading">
                     Perfil
                 </Typography>
@@ -16,7 +16,7 @@ const PerfilView = ({ perfilData, onEdit }) => {
                 <Grid container spacing={3} className="perfil-details">
                     <Grid item xs={12} sm={6}>
                         <Typography sx={{ fontWeight: '700' }} variant="body1">Nome Completo:</Typography>
-                        <Typography sx={{ padding: '6px' }} variant="body2">{perfilData.nomeCompleto}</Typography>
+                        <Typography sx={{ padding: '6px' }} variant="body2">{perfilData.nome}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <Typography sx={{ fontWeight: '700' }} variant="body1">Email:</Typography>

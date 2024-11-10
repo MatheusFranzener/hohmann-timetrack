@@ -8,26 +8,32 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useNavigate } from 'react-router-dom'; // Importe o useNavigate para navegação
+import { useNavigate } from 'react-router-dom';
 
-function Header({ isAuthenticated }) {
+function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const navigate = useNavigate(); // Use navigate para redirecionar
+  const navigate = useNavigate();
 
-  // Função para abrir o menu
+  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+  const isAdmin = usuarioLogado?.isAdmin || false;
+  const isAuthenticated = Boolean(usuarioLogado);
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  // Função para fechar o menu
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
 
-  // Função para lidar com navegação
   const handleNavigate = (path) => {
     navigate(path);
     handleMenuClose();
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('usuarioLogado');
+    navigate('/login');
   };
 
   return (
@@ -51,21 +57,30 @@ function Header({ isAuthenticated }) {
               onClose={handleMenuClose}
             >
               <MenuItem onClick={() => handleNavigate('/perfil')}>Perfil</MenuItem>
-              <MenuItem onClick={() => handleNavigate('/dados-financeiros')}>Dados Financeiros</MenuItem>
-              <MenuItem onClick={() => handleNavigate('/cadastrar-funcionario')}>Cadastrar Funcionário</MenuItem>
+              {isAdmin && (
+                <>
+                  <MenuItem onClick={() => handleNavigate('/dados-financeiros')}>Dados Financeiros</MenuItem>
+                  <MenuItem onClick={() => handleNavigate('/cadastrar-funcionario')}>Cadastrar Funcionário</MenuItem>
+                </>
+              )}
             </Menu>
           )}
 
-          <Typography variant="h6" component="div" sx={{ cursor: 'pointer', flexGrow: 1, color: '#333' }} onClick={() => {
-            if (isAuthenticated) {
-              navigate('/home');
-            }
-          }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ cursor: 'pointer', flexGrow: 1, color: '#333' }}
+            onClick={() => {
+              if (isAuthenticated) {
+                navigate('/home');
+              }
+            }}
+          >
             Hohmann
           </Typography>
 
           {isAuthenticated ? (
-            <Button sx={{ color: '#333' }} onClick={() => navigate('/login')}>
+            <Button sx={{ color: '#333' }} onClick={handleLogout}>
               Logout
             </Button>
           ) : (
@@ -75,7 +90,7 @@ function Header({ isAuthenticated }) {
           )}
         </Toolbar>
       </AppBar>
-    </Box >
+    </Box>
   );
 }
 

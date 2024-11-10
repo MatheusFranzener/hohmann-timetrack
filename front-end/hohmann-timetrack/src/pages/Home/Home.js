@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Button,
     Checkbox,
@@ -16,28 +16,36 @@ import ModalConfirmacao from '../../components/ModalConfirmacao/ModalConfirmacao
 import '../../styles/Home.css';
 
 function Home() {
-    const mockData = [
-        { id: 1, funcionario: 'Matheus Hohmann', data: '2024-10-10', horaEntrada: '08:00', refeicao: '12:00', horaSaida: '17:00', horasTotais: '8h' },
-        { id: 2, funcionario: 'João Silva', data: '2024-10-11', horaEntrada: '08:15', refeicao: '12:15', horaSaida: '17:15', horasTotais: '8h' },
-        { id: 3, funcionario: 'Matheus Hohmann', data: '2024-10-10', horaEntrada: '08:00', refeicao: '12:00', horaSaida: '17:00', horasTotais: '8h' },
-        { id: 4, funcionario: 'João Silva', data: '2024-10-11', horaEntrada: '08:15', refeicao: '12:15', horaSaida: '17:15', horasTotais: '8h' },
-        { id: 5, funcionario: 'Matheus Hohmann', data: '2024-10-10', horaEntrada: '08:00', refeicao: '12:00', horaSaida: '17:00', horasTotais: '8h' },
-        { id: 6, funcionario: 'João Silva', data: '2024-10-11', horaEntrada: '08:15', refeicao: '12:15', horaSaida: '17:15', horasTotais: '8h' },
-        { id: 7, funcionario: 'Matheus Hohmann', data: '2024-10-10', horaEntrada: '08:00', refeicao: '12:00', horaSaida: '17:00', horasTotais: '8h' },
-        { id: 8, funcionario: 'João Silva', data: '2024-10-11', horaEntrada: '08:15', refeicao: '12:15', horaSaida: '17:15', horasTotais: '8h' },
-        { id: 9, funcionario: 'Matheus Hohmann', data: '2024-10-10', horaEntrada: '08:00', refeicao: '12:00', horaSaida: '17:00', horasTotais: '8h' },
-        { id: 10, funcionario: 'João Silva', data: '2024-10-11', horaEntrada: '08:15', refeicao: '12:15', horaSaida: '17:15', horasTotais: '8h' },
-        { id: 11, funcionario: 'Matheus Hohmann', data: '2024-10-10', horaEntrada: '08:00', refeicao: '12:00', horaSaida: '17:00', horasTotais: '8h' },
-        { id: 12, funcionario: 'João Silva', data: '2024-10-11', horaEntrada: '08:15', refeicao: '12:15', horaSaida: '17:15', horasTotais: '8h' },
-    ];
-
-    const [records, setRecords] = useState(mockData);
+    const [records, setRecords] = useState([]);
+    const [funcionarios, setFuncionarios] = useState([]);
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
-    
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+        const registrosPonto = JSON.parse(localStorage.getItem('RegistroPonto')) || [];
+        const listaFuncionarios = JSON.parse(localStorage.getItem('Funcionario')) || [];
+
+        setFuncionarios(listaFuncionarios);
+
+        if (usuarioLogado && usuarioLogado.isAdmin) {
+            setRecords(registrosPonto);
+        } else if (usuarioLogado) {
+            const registrosFiltrados = registrosPonto.filter(
+                (registro) => registro.idFuncionario === usuarioLogado.idFuncionario
+            );
+            setRecords(registrosFiltrados);
+        }
+    }, []);
+
+    const getNomeFuncionario = (idFuncionario) => {
+        const funcionario = funcionarios.find((f) => f.idFuncionario === idFuncionario);
+        return funcionario ? funcionario.nome : 'Funcionário não encontrado';
+    };
 
     const handleOpenConfirmDialog = () => {
         setOpenConfirmDialog(true);
@@ -48,17 +56,32 @@ function Home() {
     };
 
     const handleConfirmDelete = () => {
-        setRecords(records.filter((record) => !selected.includes(record.id)));
+        const registrosAtualizados = records.filter(
+            (record) => !selected.includes(record.idRegistroPonto)
+        );
+        setRecords(registrosAtualizados);
         setSelected([]);
         setOpenConfirmDialog(false);
+
+        localStorage.setItem('RegistroPonto', JSON.stringify(registrosAtualizados));
+    };
+
+    const handleSelectAllClick = (event) => {
+        if (event.target.checked) {
+            setSelected(records.map((record) => record.idRegistroPonto));
+        } else {
+            setSelected([]);
+        }
     };
 
     const handleSelect = (id) => {
-        setSelected((prevSelected) =>
-            prevSelected.includes(id)
-                ? prevSelected.filter((selectedId) => selectedId !== id)
-                : [...prevSelected, id]
-        );
+        setSelected((prevSelected) => {
+            if (prevSelected.includes(id)) {
+                return prevSelected.filter((selectedId) => selectedId !== id);
+            } else {
+                return [...prevSelected, id];
+            }
+        });
     };
 
     const handleEdit = () => {
@@ -115,8 +138,8 @@ function Home() {
                             <TableCell padding="checkbox">
                                 <Checkbox
                                     indeterminate={selected.length > 0 && selected.length < records.length}
-                                    checked={records.length > 0 && selected.length === records.length}
-                                    onChange={(event) => setSelected(event.target.checked ? records.map((r) => r.id) : [])}
+                                    checked={selected.length === records.length}
+                                    onChange={handleSelectAllClick}
                                 />
                             </TableCell>
                             <TableCell>Funcionario</TableCell>
@@ -129,17 +152,17 @@ function Home() {
                     </TableHead>
                     <TableBody>
                         {records.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((record) => (
-                            <TableRow key={record.id} selected={selected.includes(record.id)}>
+                            <TableRow key={record.idRegistroPonto} selected={selected.includes(record.idRegistroPonto)}>
                                 <TableCell padding="checkbox">
                                     <Checkbox
-                                        checked={selected.includes(record.id)}
-                                        onChange={() => handleSelect(record.id)}
+                                        checked={selected.includes(record.idRegistroPonto)}
+                                        onChange={() => handleSelect(record.idRegistroPonto)}
                                     />
                                 </TableCell>
-                                <TableCell>{record.funcionario}</TableCell>
-                                <TableCell>{record.data}</TableCell>
+                                <TableCell>{getNomeFuncionario(record.idFuncionario)}</TableCell>
+                                <TableCell>{record.dataPonto}</TableCell>
                                 <TableCell>{record.horaEntrada}</TableCell>
-                                <TableCell>{record.refeicao}</TableCell>
+                                <TableCell>{record.tempoRefeicao}</TableCell>
                                 <TableCell>{record.horaSaida}</TableCell>
                                 <TableCell>{record.horasTotais}</TableCell>
                             </TableRow>

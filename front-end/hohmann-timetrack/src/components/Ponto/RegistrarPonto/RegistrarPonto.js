@@ -7,13 +7,41 @@ import '../../../styles/Ponto.css';
 
 const RegistrarPonto = () => {
   const navigate = useNavigate();
-
   const [diaTrabalhado, setDiaTrabalhado] = useState(null);
   const [horaEntrada, setHoraEntrada] = useState(null);
   const [horaSaida, setHoraSaida] = useState(null);
 
-  const handleRegister = () => {
+  const calcularHorasTotais = () => {
+    if (horaEntrada && horaSaida) {
+      const entrada = new Date(`1970-01-01T${horaEntrada.toLocaleTimeString()}`);
+      const saida = new Date(`1970-01-01T${horaSaida.toLocaleTimeString()}`);
 
+      const diffMs = saida - entrada;
+
+      const totalMs = diffMs >= 0 ? diffMs : diffMs + 24 * 60 * 60 * 1000;
+
+      const horasTrabalhadas = (totalMs - 30 * 60 * 1000) / (1000 * 60 * 60);
+      return horasTrabalhadas.toFixed(2) + 'h';
+    }
+    return '0h';
+  };
+
+  const handleRegister = () => {
+    const registrosPonto = JSON.parse(localStorage.getItem('RegistroPonto')) || [];
+
+    const novoRegistro = {
+      idRegistroPonto: registrosPonto.length + 1,
+      idFuncionario: JSON.parse(localStorage.getItem('usuarioLogado')).idFuncionario,
+      dataPonto: diaTrabalhado?.toISOString().split('T')[0],
+      horaEntrada: horaEntrada?.toLocaleTimeString(),
+      horaSaida: horaSaida?.toLocaleTimeString(),
+      tempoRefeicao: '30m',
+      horasTotais: calcularHorasTotais()
+    };
+
+    registrosPonto.push(novoRegistro);
+    localStorage.setItem('RegistroPonto', JSON.stringify(registrosPonto));
+    navigate('/home');
   };
 
   return (
@@ -31,7 +59,6 @@ const RegistrarPonto = () => {
               onChange={(newValue) => setDiaTrabalhado(newValue)}
               renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
             />
-
             <TimePicker
               label="Hora Entrada"
               value={horaEntrada}
@@ -39,7 +66,6 @@ const RegistrarPonto = () => {
               renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
               sx={{marginTop: '20px'}}
             />
-
             <TimePicker
               label="Hora Saída"
               value={horaSaida}

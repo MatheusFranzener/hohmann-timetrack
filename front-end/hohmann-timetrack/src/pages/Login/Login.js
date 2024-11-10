@@ -1,14 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Typography, TextField, Button, Link, Box } from '@mui/material';
 import '../../styles/Login.css';
 
 const Login = ({ onLogin }) => {
     const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [senha, setSenha] = useState('');
+    const [error, setError] = useState('');
 
     const handleLoginClick = () => {
-        onLogin();
-        navigate('/home');
+        const funcionarios = JSON.parse(localStorage.getItem('Funcionario')) || [];
+
+        const usuario = funcionarios.find(
+            (func) => func.email === email && func.senha === senha
+        );
+
+        if (usuario) {
+            localStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+            onLogin();
+            navigate('/home');
+        } else {
+            setError('Usuário ou senha incorretos!');
+        }
     };
 
     return (
@@ -24,6 +38,8 @@ const Login = ({ onLogin }) => {
                             variant="outlined"
                             fullWidth
                             className="text-field"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                         <TextField
                             label="Senha"
@@ -31,7 +47,14 @@ const Login = ({ onLogin }) => {
                             variant="outlined"
                             fullWidth
                             className="text-field"
+                            value={senha}
+                            onChange={(e) => setSenha(e.target.value)}
                         />
+                        {error && (
+                            <Typography color="error" variant="body2" align="center" sx={{ marginTop: '10px' }}>
+                                {error}
+                            </Typography>
+                        )}
                         <Box className="forgot-password">
                             <Link href="#" underline="none">
                                 Esqueci a minha Senha
