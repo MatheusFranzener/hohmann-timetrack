@@ -43,6 +43,7 @@ const CadastroFuncionario = () => {
         const funcionarios = JSON.parse(localStorage.getItem('Funcionario')) || [];
 
         const novoFuncionario = {
+            idFuncionario: funcionarios.length + 1,
             ...formData,
             dataNascimento: selectedDate ? selectedDate.toISOString().split('T')[0] : null,
             salarioHora: 13,
